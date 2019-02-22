@@ -71,14 +71,12 @@ void		send_ants(t_lem_gen *g)
 {
 	int		i;
 	int		curr_ant;
-	int		my_lines;
 
 	curr_ant = 0;
-	my_lines = 0;
 	while (++curr_ant <= g->ant)
 	{
 		g->ants_trans[0].ants = curr_ant;
-		print_result(&my_lines, g->size, g);
+		print_result(g->size, g);
 		i = g->size;
 		while (--i)
 			g->ants_trans[i].ants = g->ants_trans[i - 1].ants;
@@ -86,12 +84,9 @@ void		send_ants(t_lem_gen *g)
 	}
 	while (!if_remains(g))
 	{
-		print_result(&my_lines, g->size, g);
+		print_result(g->size, g);
 		i = g->size;
 		while (--i)
 			g->ants_trans[i].ants = g->ants_trans[i - 1].ants;
 	}
-	ft_printf("%s", (g->req_lines) ? (g->req_lines) : "");
-	ft_printf("%sNumber of lines: %d\n", (g->req_lines) ? "\n" : "", my_lines);
-	ft_strdel(&g->req_lines);
 }

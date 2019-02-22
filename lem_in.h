@@ -15,11 +15,16 @@
 
 # include "libft/includes/libft.h"
 
+typedef struct			s_flag
+{
+	int					cmt;
+	int					color;
+	int					lines;
+}						t_flag;
+
 typedef struct			s_room
 {
 	int					id;
-	long				x;
-	long				y;
 	char				*name;
 	struct s_room		*next;
 }						t_room;
@@ -60,6 +65,7 @@ typedef struct			s_lem_gen
 	t_comment			*comment;
 	t_road				*delay;
 	t_road				**road;
+	t_flag				flag;
 	char				*line;
 	int					size;
 	int					*final;
@@ -69,6 +75,7 @@ typedef struct			s_lem_gen
 	char				*end;
 	double				*weight;
 	char				*req_lines;
+	int					my_lines;
 }						t_lem_gen;
 
 void					parse_ants(t_lem_gen *g);
@@ -86,8 +93,6 @@ void					push_end(t_lem_gen *g);
 t_room					*if_exists(t_room *begin, char *chain);
 t_road					*new_road(t_chained *chained);
 void					push_road(t_road **begin, t_road *road);
-double					get_weight(t_room *src, t_room *dest);
-double					iter_geron(double deviation, double natural);
 
 void					push_delay(double weight, int dest, t_road **begin);
 void					pop_delay(t_road **begin);
@@ -99,7 +104,9 @@ t_room					*get_curr_room(int current, t_room *begin);
 int						if_remains(t_lem_gen *g);
 void					send_ants(t_lem_gen *g);
 
-void					print_result(int *my_lines, int ants, t_lem_gen *g);
+void					parse_args(int ac, char **av, t_lem_gen *g);
+void					print_args(t_lem_gen *g);
+void					print_result(int ants, t_lem_gen *g);
 void					quit(char *s);
 
 #endif

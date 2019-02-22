@@ -59,29 +59,3 @@ t_road		*new_road(t_chained *chained)
 	new->weight = chained->weight;
 	return (new);
 }
-
-double		iter_geron(double approximation, double natural)
-{
-	double	deviation;
-	double	previous;
-
-	previous = approximation;
-	deviation = natural / previous;
-	approximation = (deviation + previous) / 2;
-	if (previous * 0.99 > approximation || previous * 1.01 < approximation)
-		return (iter_geron(approximation, natural));
-	return (approximation);
-}
-
-double		get_weight(t_room *src, t_room *dest)
-{
-	long	i;
-	long	j;
-	double	weight;
-
-	i = src->x - dest->x;
-	j = src->y - dest->y;
-	weight = (double)((j * j) + (i * i));
-	weight = iter_geron(weight / 2, weight);
-	return (weight);
-}

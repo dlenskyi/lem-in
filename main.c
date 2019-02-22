@@ -12,7 +12,7 @@
 
 #include "lem_in.h"
 
-void	print_result(int *my_lines, int ants, t_lem_gen *g)
+void	print_result(int ants, t_lem_gen *g)
 {
 	int valid_print;
 
@@ -30,7 +30,27 @@ void	print_result(int *my_lines, int ants, t_lem_gen *g)
 		}
 	}
 	ft_printf("\n");
-	(*my_lines)++;
+	g->my_lines += 1;
+}
+
+void	print_args(t_lem_gen *g)
+{
+	t_comment	*cmt_tmp;
+	cmt_tmp = g->comment;
+	if (g->flag.lines)
+	{
+		ft_printf("%s", (g->req_lines) ? (g->req_lines) : "");
+		ft_printf("%sNumber of lines: %d\n", (g->req_lines) ? "\n" : "", g->my_lines);
+		ft_strdel(&g->req_lines);
+	}
+	if (g->flag.cmt)
+	{
+		while (cmt_tmp)
+		{
+			ft_printf("{YEL}%s{OFF}\n", cmt_tmp->comment);
+			cmt_tmp = cmt_tmp->next;
+		}
+	}
 }
 
 void	quit(char *s)
@@ -52,19 +72,47 @@ void	quit(char *s)
 		else if (!ft_strcmp(s, "Error in chains :/"))
 			ft_printf("{RED}{SET:BO}Error in chains :/{OFF}\n");
 		else if (!ft_strcmp(s, "Something went wrong with transmission :("))
-			ft_printf("{RED}{SET:BO}Something went wrong with
-						transmission :({OFF}\n");
+		{
+			ft_printf("{RED}{SET:BO}Something went wrong with ");
+			ft_printf("transmission :({OFF}\n");
+		}
+		else if (!ft_strcmp(s, "usage: ./lem-in < [map]"))
+			ft_printf("{RED}{SET:BO}usage: ./lem-in < [map]{OFF}\n");
 		exit(1);
 	}
 	exit(0);
 }
 
-int		main(void)
+void	parse_args(int ac, char **av, t_lem_gen *g)
+{
+	int	i;
+
+	i = 1;
+	if (ac < 1)
+		quit("usage: ./lem-in < [map]");
+	while (av[i])
+	{
+		if (!ft_strcmp(av[i], "-colors"))
+			g->flag.color = 1;
+		if (!ft_strcmp(av[i], "-lines"))
+			g->flag.lines = 1;
+		if (!ft_strcmp(av[i], "-cmt"))
+			g->flag.cmt = 1;
+		if ((ft_strcmp(av[i], "-colors") || ft_strcmp(av[i], "-") ||
+			ft_strcmp(av[i], "-lines") || ft_strcmp(av[i], "-cmt")) &&
+			ft_strchr(av[i], '<'))
+			quit("usage: ./lem-in < [map]");
+		i++;
+	}
+}
+
+int		main(int ac, char **av)
 {
 	t_lem_gen	g;
 
 	ft_bzero(&g, sizeof(g));
 	g.room_num = 0;
+	parse_args(ac, av, &g);
 	parse_ants(&g);
 	parse_room(&g);
 	if (!g.start || !g.end)
@@ -75,6 +123,8 @@ int		main(void)
 	if (!g.ants_trans)
 		parse_dat_way(&g);
 	send_ants(&g);
+	if (g.flag.cmt || g.flag.lines || g.flag.color)
+		print_args(&g);
 	quit("GG!");
 	return (0);
 }

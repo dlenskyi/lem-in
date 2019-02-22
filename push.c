@@ -20,8 +20,6 @@ t_room		*push_room(char **str, t_room **begin, t_lem_gen *g)
 	new = ft_memalloc(sizeof(t_room));
 	new->name = ft_strdup(str[0]);
 	new->id = ++g->room_num;
-	new->x = ft_atoi(str[1]);
-	new->y = ft_atoi(str[2]);
 	ft_del_strsplit(str);
 	buf = *begin;
 	if (!buf)
@@ -45,7 +43,6 @@ void		push_chain(char **str, t_lem_gen *g)
 {
 	t_room		*src[2];
 	t_chained	*new[2];
-	double		weight;
 
 	src[0] = if_exists(g->room, str[0]);
 	src[1] = if_exists(g->room, str[1]);
@@ -58,12 +55,9 @@ void		push_chain(char **str, t_lem_gen *g)
 		quit("Initialization error");
 	if (!(new[1] = (t_chained *)ft_memalloc(sizeof(t_chained))))
 		quit("Initialization error");
-	weight = get_weight(src[0], src[1]);
-	new[0]->weight = weight;
 	new[0]->src = src[0]->id;
 	new[0]->dest = src[1]->id;
 	new_chain(&g->chained, new[0]);
-	new[1]->weight = weight;
 	new[1]->dest = src[0]->id;
 	new[1]->src = src[1]->id;
 	new_chain(&g->chained, new[1]);
