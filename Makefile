@@ -22,7 +22,8 @@ LEM-IN_HEAD = lem-in.h
 
 INCLUDES = -I$(LEM-IN_HEAD) -I$(LIBFT_HEAD)
 
-SRC = 	main.c parse_data.c push.c ants_transmission.c fast_search.c chained_room_util.c
+SRC = 	main.c parse_data.c push.c ants_transmission.c fast_search.c chained_room_util.c \
+        manage_print.c
 
 OBJ = $(patsubst %.c, %.o, $(SRC))
 

@@ -39,7 +39,7 @@ void		parse_ants(t_lem_gen *g)
 	if (!g->line || ft_atoi(g->line) <= 0)
 		quit("Invalid number of ants");
 	g->ant = ft_atoi(g->line);
-	ft_printf("%d\n", g->ant);
+	push_map(&g->map, g);
 	ft_strdel(&g->line);
 }
 
@@ -67,7 +67,7 @@ void		parse_room(t_lem_gen *g)
 			quit("Invalid room");
 		}
 		if (!ft_strstr(g->line, "#Here is the number of lines required:"))
-			ft_printf("%s\n", g->line);
+			push_map(&g->map, g);
 		ft_strdel(&g->line);
 	}
 }

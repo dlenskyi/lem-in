@@ -57,6 +57,12 @@ typedef struct			s_road
 	struct s_road		*next;
 }						t_road;
 
+typedef struct			s_map
+{
+	char				*info;
+	struct s_map		*next;
+}						t_map;
+
 typedef struct			s_lem_gen
 {
 	t_room				*room;
@@ -66,6 +72,7 @@ typedef struct			s_lem_gen
 	t_road				*delay;
 	t_road				**road;
 	t_flag				flag;
+	t_map				*map;
 	char				*line;
 	int					size;
 	int					*final;
@@ -93,6 +100,7 @@ void					push_end(t_lem_gen *g);
 t_room					*if_exists(t_room *begin, char *chain);
 t_road					*new_road(t_chained *chained);
 void					push_road(t_road **begin, t_road *road);
+void					push_map(t_map **begin, t_lem_gen *g);
 
 void					push_delay(double weight, int dest, t_road **begin);
 void					pop_delay(t_road **begin);
@@ -104,9 +112,13 @@ t_room					*get_curr_room(int current, t_room *begin);
 int						if_remains(t_lem_gen *g);
 void					send_ants(t_lem_gen *g);
 
-void					parse_args(int ac, char **av, t_lem_gen *g);
-void					print_args(t_lem_gen *g);
 void					print_result(int ants, t_lem_gen *g);
+void					print_if_color(int ants, t_lem_gen *g);
+void					print_map(t_lem_gen *g);
+void					print_color_map(t_lem_gen *g);
+void					print_args(t_lem_gen *g);
+
+void					parse_args(int ac, char **av, t_lem_gen *g);
 void					quit(char *s);
 
 #endif

@@ -59,3 +59,28 @@ t_road		*new_road(t_chained *chained)
 	new->weight = chained->weight;
 	return (new);
 }
+
+void		push_map(t_map **begin, t_lem_gen *g)
+{
+	t_map	*buf;
+	t_map	*new;
+
+	if (!(new = (t_map *)ft_memalloc(sizeof(t_map))))
+		quit("Initialization error");
+	new->info = ft_strdup(g->line);
+	buf = *begin;
+	if (!buf)
+	{
+		*begin = new;
+		return ;
+	}
+	while (buf)
+	{
+		if (!buf->next)
+		{
+			buf->next = new;
+			return ;
+		}
+		buf = buf->next;
+	}
+}

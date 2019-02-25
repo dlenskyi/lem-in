@@ -73,10 +73,12 @@ void		send_ants(t_lem_gen *g)
 	int		curr_ant;
 
 	curr_ant = 0;
+	ft_printf("\n");
 	while (++curr_ant <= g->ant)
 	{
 		g->ants_trans[0].ants = curr_ant;
-		print_result(g->size, g);
+		(g->flag.color) ? (print_if_color(g->size, g)) :
+		(print_result(g->size, g));
 		i = g->size;
 		while (--i)
 			g->ants_trans[i].ants = g->ants_trans[i - 1].ants;
@@ -84,7 +86,8 @@ void		send_ants(t_lem_gen *g)
 	}
 	while (!if_remains(g))
 	{
-		print_result(g->size, g);
+		(g->flag.color) ? (print_if_color(g->size, g)) :
+		(print_result(g->size, g));
 		i = g->size;
 		while (--i)
 			g->ants_trans[i].ants = g->ants_trans[i - 1].ants;
