@@ -16,6 +16,9 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include <string.h>
+# include <sys/types.h>
+# include <stdint.h>
 # include <stdarg.h>
 # include <limits.h>
 # include "ft_printf.h"

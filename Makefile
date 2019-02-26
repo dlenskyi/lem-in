@@ -12,52 +12,49 @@
 
 NAME = lem-in
 
-FLAGS = -Wall -Wextra -Werror -O3
+FLAGS = -c -Wall -Wextra -Werror -O3
 CC = gcc
 
-LIBFT = $(LIBFT_DIR)libft.a
-LIBFT_DIR = ./libft/
-LIBFT_HEAD = $(LIBFT_DIR)includes/
+LIBFT_DIR = libft
+LIBS = -L $(LIBFT_DIR) -lft
 LEM-IN_HEAD = lem-in.h
 
-INCLUDES = -I$(LEM-IN_HEAD) -I$(LIBFT_HEAD)
+INCLUDES = -I $(LEM-IN_HEAD) -I $(LIBFT_DIR)/includes
 
 SRC = 	main.c parse_data.c push.c ants_transmission.c fast_search.c chained_room_util.c \
         manage_print.c
 
 OBJ = $(patsubst %.c, %.o, $(SRC))
 
-RED = \x1B[31m
-GREEN = \x1B[32m
-YELLOW = \x1B[33m
-OFF = \x1B[0m
+RED = \033[31m
+GREEN = \033[32m
+YELLOW = \033[33m
+OFF = \033[0m
 
 .PHONY: all clean fclean re
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJ)
-	@$(CC) $(FLAGS) $(INCLUDES) $(LIBFT) $(OBJ) -o $(NAME)
-	@echo "$(GREEN)lem-in completed!\n$(OFF)"
-	@echo "$(GREEN)usage example: ./lem-in < [map]$(OFF)"
+%.o: %.c
+	@$(CC) $(FLAGS) $(INCLUDES) $< -o $@
 
-%.o: %.c $(LEM-IN_HEAD)
-	@$(CC) $(FLAGS) -c $(INCLUDES) $< -o $@
-
-$(LIBFT):
+$(NAME): $(OBJ)
 	@echo "$(YELLOW)Compiling lem-in project...\n$(OFF)"
 	@echo "$(YELLOW)Compiling libft...$(OFF)"
-	@$(MAKE) -sC $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR)
 	@echo "$(GREEN)libft.a was created.$(OFF)"
+	@$(CC) $(OBJ) $(LIBS) -o $@
+	@echo "$(GREEN)lem-in completed!\n$(OFF)"
+	@echo "$(GREEN)usage: ./lem-in [-color | -lines | -cmt] < [map]$(OFF)"
 
 clean:
-	@$(MAKE) -sC $(LIBFT_DIR) clean
+	@$(MAKE) -C $(LIBFT_DIR) clean
 	@rm -f $(OBJ)
 	@rm -f filler.trace
 	@echo "$(RED)libft.a was removed$(OFF)"
 
 fclean: clean
-	@rm -f $(LIBFT)
+	@$(MAKE) -C $(LIBFT_DIR) fclean
 	@rm -f $(NAME)
 	@rm -f $(OBJ)
 	@rm -f filler.trace

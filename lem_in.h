@@ -13,7 +13,7 @@
 #ifndef LEM_IN_H
 # define LEM_IN_H
 
-# include "libft/includes/libft.h"
+# include "libft.h"
 
 typedef struct			s_flag
 {

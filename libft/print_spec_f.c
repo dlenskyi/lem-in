@@ -50,7 +50,7 @@ char	*get_precision_f(char *precision, int prec, long double *nb, char *str)
 	k = 0.5;
 	while (++j < prec)
 		k *= 0.1;
-	*nb += (!j && prec == 6) || !((int)nb) ? 0 : k;
+	*nb += (!j && prec == 6) || !((intptr_t)nb) ? 0 : k;
 	if (*nb < 1)
 	{
 		j = -1;
