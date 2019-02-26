@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 18:46:44 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/25 19:26:19 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 15:22:36 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ void	print_args(t_lem_gen *g)
 	cmt_tmp = g->comment;
 	if (g->flag.lines)
 	{
-		ft_printf("%s", (g->req_lines) ? (g->req_lines) : "");
+		ft_printf("\n%s", (g->req_lines) ? (g->req_lines) : "");
 		ft_printf("%sNumber of lines: %d\n", (g->req_lines) ? "\n" : "", g->my_lines);
 		ft_strdel(&g->req_lines);
 	}
 	if (g->flag.cmt)
 	{
-		ft_printf("\n");
+		ft_printf("\n{MGT}----COMMENTS----\n{OFF}");
 		while (cmt_tmp)
 		{
 			ft_printf("{YEL}%s{OFF}\n", cmt_tmp->comment);
