@@ -12,15 +12,14 @@
 
 #include "lem_in.h"
 
-void		push_delay(double weight, int dest, t_road **begin)
+void		push_delay(int dest, t_road **begin, t_lem_gen *g)
 {
 	t_road	*road_tmp;
 	t_road	*road;
 
 	if (!(road = (t_road *)ft_memalloc(sizeof(t_road))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	road_tmp = *begin;
-	road->weight = weight;
 	road->dest = dest;
 	if (!road_tmp)
 		*begin = road;
@@ -54,10 +53,10 @@ void		parse_optimal_way(t_lem_gen *g)
 
 	i = -1;
 	if (!(g->final = (int *)ft_memalloc(sizeof(int) * (g->room_num + 1))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	if (!(g->weight = (double *)ft_memalloc(sizeof(double) *
 			(g->room_num + 1))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	while (g->room_num + 1 > ++i)
 		g->final[i] = -1;
 	i = -1;
@@ -66,29 +65,27 @@ void		parse_optimal_way(t_lem_gen *g)
 	room_buf = if_exists(g->room, g->start);
 	g->final[room_buf->id] = 0;
 	g->weight[room_buf->id] = 0;
-	push_delay(0, room_buf->id, &g->delay);
+	push_delay(room_buf->id, &g->delay, g);
 }
 
 void		get_optimal_way(t_lem_gen *g)
 {
 	int		dst_buf;
-	double	weight_buf;
 	t_road	*r_buf;
 
 	while (g->delay)
 	{
 		dst_buf = g->delay->dest;
-		weight_buf = g->delay->weight;
 		r_buf = g->road[dst_buf];
 		pop_delay(&g->delay);
-		if (g->weight[dst_buf] >= weight_buf)
+		if (g->weight[dst_buf] >= 0)
 		{
 			while (r_buf)
 			{
-				if (r_buf->weight + g->weight[dst_buf] < g->weight[r_buf->dest])
+				if (g->weight[dst_buf] < g->weight[r_buf->dest])
 				{
-					g->weight[r_buf->dest] = r_buf->weight + g->weight[dst_buf];
-					push_delay(g->weight[r_buf->dest], r_buf->dest, &g->delay);
+					g->weight[r_buf->dest] = g->weight[dst_buf];
+					push_delay(r_buf->dest, &g->delay, g);
 					g->final[r_buf->dest] = dst_buf;
 				}
 				r_buf = r_buf->next;

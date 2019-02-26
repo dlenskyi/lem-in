@@ -13,7 +13,7 @@
 #ifndef LEM_IN_H
 # define LEM_IN_H
 
-# include "libft.h"
+# include "libft/includes/libft.h"
 
 typedef struct			s_flag
 {
@@ -31,7 +31,6 @@ typedef struct			s_room
 
 typedef struct			s_chained
 {
-	double				weight;
 	int					dest;
 	int					src;
 	struct s_chained	*next;
@@ -52,7 +51,6 @@ typedef struct			s_comment
 
 typedef struct			s_road
 {
-	double				weight;
 	int					dest;
 	struct s_road		*next;
 }						t_road;
@@ -98,11 +96,11 @@ void					push_start(t_lem_gen *g);
 void					push_end(t_lem_gen *g);
 
 t_room					*if_exists(t_room *begin, char *chain);
-t_road					*new_road(t_chained *chained);
+t_road					*new_road(t_chained *chained, t_lem_gen *g);
 void					push_road(t_road **begin, t_road *road);
 void					push_map(t_map **begin, t_lem_gen *g);
 
-void					push_delay(double weight, int dest, t_road **begin);
+void					push_delay(int dest, t_road **begin, t_lem_gen *g);
 void					pop_delay(t_road **begin);
 void					parse_optimal_way(t_lem_gen *g);
 void					get_optimal_way(t_lem_gen *g);
@@ -119,6 +117,6 @@ void					print_color_map(t_lem_gen *g);
 void					print_args(t_lem_gen *g);
 
 void					parse_args(int ac, char **av, t_lem_gen *g);
-void					quit(char *s);
+void					quit(char *s, t_lem_gen *g);
 
 #endif

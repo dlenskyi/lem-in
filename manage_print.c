@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 18:46:44 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/26 15:22:36 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/25 18:46:56 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void	print_result(int ants, t_lem_gen *g)
 		{
 			if (valid_print++ == 0)
 				ft_printf("L%d-%s",
-						  g->ants_trans[ants].ants, g->ants_trans[ants].name);
+						g->ants_trans[ants].ants, g->ants_trans[ants].name);
 			else
 				ft_printf(" L%d-%s",
-						  g->ants_trans[ants].ants, g->ants_trans[ants].name);
+						g->ants_trans[ants].ants, g->ants_trans[ants].name);
 		}
 	}
 	ft_printf("\n");
@@ -41,7 +41,8 @@ void	print_args(t_lem_gen *g)
 	if (g->flag.lines)
 	{
 		ft_printf("\n%s", (g->req_lines) ? (g->req_lines) : "");
-		ft_printf("%sNumber of lines: %d\n", (g->req_lines) ? "\n" : "", g->my_lines);
+		ft_printf("%sNumber of lines: %d\n", (g->req_lines) ? "\n" : "",
+				g->my_lines);
 		ft_strdel(&g->req_lines);
 	}
 	if (g->flag.cmt)
@@ -55,7 +56,7 @@ void	print_args(t_lem_gen *g)
 	}
 }
 
-void		print_map(t_lem_gen *g)
+void	print_map(t_lem_gen *g)
 {
 	t_map	*buf_map;
 
@@ -67,7 +68,7 @@ void		print_map(t_lem_gen *g)
 	}
 }
 
-void		print_color_map(t_lem_gen *g)
+void	print_color_map(t_lem_gen *g)
 {
 	t_map	*buf_map;
 
@@ -79,7 +80,7 @@ void		print_color_map(t_lem_gen *g)
 	}
 }
 
-void		print_if_color(int ants, t_lem_gen *g)
+void	print_if_color(int ants, t_lem_gen *g)
 {
 	int valid_print;
 
@@ -90,10 +91,10 @@ void		print_if_color(int ants, t_lem_gen *g)
 		{
 			if (valid_print++ == 0)
 				ft_printf("{GRN}L%d-%s{OFF}",
-						  g->ants_trans[ants].ants, g->ants_trans[ants].name);
+						g->ants_trans[ants].ants, g->ants_trans[ants].name);
 			else
 				ft_printf("{GRN} L%d-%s{OFF}",
-						  g->ants_trans[ants].ants, g->ants_trans[ants].name);
+						g->ants_trans[ants].ants, g->ants_trans[ants].name);
 		}
 	}
 	ft_printf("\n");

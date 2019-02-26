@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/01 12:10:54 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/01 12:10:55 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 17:49:18 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,12 @@ void		push_chain(char **str, t_lem_gen *g)
 	if (!src[0] || !src[1] || str[2])
 	{
 		ft_del_strsplit(str);
-		quit("Error in chains :/");
+		quit("Error in chains :/", g);
 	}
 	if (!(new[0] = (t_chained *)ft_memalloc(sizeof(t_chained))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	if (!(new[1] = (t_chained *)ft_memalloc(sizeof(t_chained))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	new[0]->src = src[0]->id;
 	new[0]->dest = src[1]->id;
 	new_chain(&g->chained, new[0]);
@@ -70,7 +70,7 @@ void		push_comment(t_comment **begin, t_lem_gen *g)
 	t_comment	*new;
 
 	if (!(new = (t_comment *)ft_memalloc(sizeof(t_comment))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	new->comment = ft_strdup(g->line);
 	buf = *begin;
 	if (!buf)
@@ -93,6 +93,7 @@ void		push_start(t_lem_gen *g)
 {
 	char	**str;
 
+	push_map(&g->map, g);
 	while (get_next_line(0, &g->line) > 0)
 	{
 		if (g->line[0] == '#')
@@ -112,6 +113,7 @@ void		push_end(t_lem_gen *g)
 {
 	char	**str;
 
+	push_map(&g->map, g);
 	while (get_next_line(0, &g->line) > 0)
 	{
 		if (g->line[0] == '#')

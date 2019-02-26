@@ -6,14 +6,16 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 17:14:24 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/25 19:38:22 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 17:34:34 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-void	quit(char *s)
+void	quit(char *s, t_lem_gen *g)
 {
+	if (g->line)
+		ft_strdel(&g->line);
 	if (s)
 	{
 		ft_printf("{RED}{SET:BO}%s{OFF}\n", s);
@@ -28,7 +30,7 @@ void	parse_args(int ac, char **av, t_lem_gen *g)
 
 	i = 1;
 	if (ac < 1)
-		quit("usage: ./lem-in [-color | -lines | -cmt] < [map]");
+		quit("usage: ./lem-in [-color | -lines | -cmt] < [map]", g);
 	while (av[i])
 	{
 		if (!ft_strcmp(av[i], "-color"))
@@ -38,7 +40,7 @@ void	parse_args(int ac, char **av, t_lem_gen *g)
 		else if (!ft_strcmp(av[i], "-cmt"))
 			g->flag.cmt = 1;
 		else
-			quit("usage: ./lem-in [-color | -lines | -cmt] < [map]");
+			quit("usage: ./lem-in [-color | -lines | -cmt] < [map]", g);
 		i++;
 	}
 }
@@ -53,7 +55,7 @@ int		main(int ac, char **av)
 	parse_ants(&g);
 	parse_room(&g);
 	if (!g.start || !g.end)
-		quit("Map doesn't have start or end");
+		quit("Map doesn't have start or end", &g);
 	find_road(&g);
 	parse_optimal_way(&g);
 	get_optimal_way(&g);
@@ -64,6 +66,6 @@ int		main(int ac, char **av)
 	send_ants(&g);
 	if (g.flag.cmt || g.flag.lines || g.flag.color)
 		print_args(&g);
-	quit(NULL);
+	quit(NULL, &g);
 	return (0);
 }

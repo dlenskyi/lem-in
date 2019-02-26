@@ -22,12 +22,12 @@ void		parse_dat_way(t_lem_gen *g)
 	room_buf = if_exists(g->room, g->end);
 	valid = g->final[room_buf->id];
 	if (valid == -1)
-		quit("Something went wrong with transmission :(");
+		quit("Something went wrong with transmission :(", g);
 	while (++i >= 0 && valid != 0)
 		valid = g->final[valid];
 	if (!(g->ants_trans = (t_ants_trans *)ft_memalloc(sizeof(t_ants_trans)
 			* i)))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	g->size = i;
 	valid = g->final[room_buf->id];
 	g->ants_trans[--i].name = room_buf->name;

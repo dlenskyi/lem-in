@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:28:14 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/01/31 18:28:16 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 17:49:02 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void		is_safe(char **str, t_lem_gen *g)
 		str[0][0] == 'L' || g->chained)
 	{
 		ft_del_strsplit(str);
-		quit("Invalid map");
+		quit("Invalid map", g);
 	}
 	push_room(str, &g->room, g);
 }
@@ -37,7 +37,7 @@ void		parse_ants(t_lem_gen *g)
 			break ;
 	}
 	if (!g->line || ft_atoi(g->line) <= 0)
-		quit("Invalid number of ants");
+		quit("Invalid number of ants", g);
 	g->ant = ft_atoi(g->line);
 	push_map(&g->map, g);
 	ft_strdel(&g->line);
@@ -62,11 +62,9 @@ void		parse_room(t_lem_gen *g)
 		else if (ft_strchr(g->line, '-'))
 			push_chain(ft_strsplit(g->line, '-'), g);
 		else
-		{
-			ft_strdel(&g->line);
-			quit("Invalid room");
-		}
-		if (!ft_strstr(g->line, "#Here is the number of lines required:"))
+			quit("Invalid room", g);
+		if (!ft_strstr(g->line, "#Here is the number of lines required:") &&
+			g->line[0] != '#')
 			push_map(&g->map, g);
 		ft_strdel(&g->line);
 	}
@@ -99,11 +97,11 @@ void		find_road(t_lem_gen *g)
 	t_chained	*chained;
 
 	if (!(g->road = ft_memalloc(sizeof(t_road) * (g->room_num + 2))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	chained = g->chained;
 	while (chained)
 	{
-		road = new_road(chained);
+		road = new_road(chained, g);
 		push_road(&g->road[chained->src], road);
 		chained = chained->next;
 	}

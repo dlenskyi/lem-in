@@ -49,14 +49,13 @@ void		push_road(t_road **begin, t_road *road)
 	}
 }
 
-t_road		*new_road(t_chained *chained)
+t_road		*new_road(t_chained *chained, t_lem_gen *g)
 {
 	t_road	*new;
 
 	if (!(new = (t_road *)ft_memalloc(sizeof(t_road))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	new->dest = chained->dest;
-	new->weight = chained->weight;
 	return (new);
 }
 
@@ -66,7 +65,7 @@ void		push_map(t_map **begin, t_lem_gen *g)
 	t_map	*new;
 
 	if (!(new = (t_map *)ft_memalloc(sizeof(t_map))))
-		quit("Initialization error");
+		quit("Initialization error", g);
 	new->info = ft_strdup(g->line);
 	buf = *begin;
 	if (!buf)
