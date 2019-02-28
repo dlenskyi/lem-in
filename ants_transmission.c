@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/15 17:25:09 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/15 17:25:10 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 18:34:29 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,9 @@ void		parse_dat_way(t_lem_gen *g)
 	g->size = i;
 	valid = g->final[room_buf->id];
 	g->ants_trans[--i].name = room_buf->name;
-	g->ants_trans[i].id = room_buf->id;
 	while (g->final[valid] != 0)
 	{
 		g->ants_trans[--i].name = get_curr_room(valid, g->room)->name;
-		g->ants_trans[i].id = valid;
 		valid = g->final[valid];
 	}
 }

@@ -14,21 +14,10 @@
 
 void	print_result(int ants, t_lem_gen *g)
 {
-	int valid_print;
-
-	valid_print = 0;
 	while (--ants >= 0)
-	{
 		if (g->ants_trans[ants].ants != 0)
-		{
-			if (valid_print++ == 0)
-				ft_printf("L%d-%s",
-						g->ants_trans[ants].ants, g->ants_trans[ants].name);
-			else
-				ft_printf(" L%d-%s",
-						g->ants_trans[ants].ants, g->ants_trans[ants].name);
-		}
-	}
+			ft_printf("L%i-%s ", g->ants_trans[ants].ants,
+					g->ants_trans[ants].name);
 	ft_printf("\n");
 	g->my_lines += 1;
 }
@@ -82,21 +71,10 @@ void	print_color_map(t_lem_gen *g)
 
 void	print_if_color(int ants, t_lem_gen *g)
 {
-	int valid_print;
-
-	valid_print = 0;
 	while (--ants >= 0)
-	{
 		if (g->ants_trans[ants].ants != 0)
-		{
-			if (valid_print++ == 0)
-				ft_printf("{GRN}L%d-%s{OFF}",
-						g->ants_trans[ants].ants, g->ants_trans[ants].name);
-			else
-				ft_printf("{GRN} L%d-%s{OFF}",
-						g->ants_trans[ants].ants, g->ants_trans[ants].name);
-		}
-	}
+			ft_printf("{GRN}L%d-%s {OFF}",
+					g->ants_trans[ants].ants, g->ants_trans[ants].name);
 	ft_printf("\n");
 	g->my_lines += 1;
 }

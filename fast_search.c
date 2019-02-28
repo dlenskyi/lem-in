@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/01 14:13:09 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/01 14:13:10 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 18:26:53 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,10 @@ void		parse_optimal_way(t_lem_gen *g)
 	if (!(g->weight = (double *)ft_memalloc(sizeof(double) *
 			(g->room_num + 1))))
 		quit("Initialization error", g);
-	while (g->room_num + 1 > ++i)
+	while (g->room_num >= ++i)
 		g->final[i] = -1;
 	i = -1;
-	while (g->room_num + 1 > ++i)
+	while (g->room_num >= ++i)
 		g->weight[i] = LONG_MAX;
 	room_buf = if_exists(g->room, g->start);
 	g->final[room_buf->id] = 0;
