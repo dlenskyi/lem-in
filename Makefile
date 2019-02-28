@@ -6,7 +6,7 @@
 #    By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/04 16:22:11 by dlenskyi          #+#    #+#              #
-#    Updated: 2019/02/15 18:20:56 by dlenskyi         ###   ########.fr        #
+#    Updated: 2019/02/28 14:39:56 by dlenskyi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,7 @@ $(NAME): $(OBJ)
 	@echo "$(GREEN)libft.a was created.$(OFF)"
 	@$(CC) $(OBJ) $(LIBS) -o $@
 	@echo "$(GREEN)lem-in completed!\n$(OFF)"
-	@echo "$(GREEN)usage: ./lem-in [-color | -lines | -cmt] < [map]$(OFF)"
+	@echo "$(GREEN)usage: ./lem-in [-help | -color | -lines | -cmt] < [map]$(OFF)"
 
 clean:
 	@$(MAKE) -C $(LIBFT_DIR) clean
