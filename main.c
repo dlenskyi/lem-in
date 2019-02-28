@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 17:14:24 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/26 17:34:34 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/28 14:37:47 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	parse_args(int ac, char **av, t_lem_gen *g)
 
 	i = 1;
 	if (ac < 1)
-		quit("usage: ./lem-in [-color | -lines | -cmt] < [map]", g);
+		quit("usage: ./lem-in [-help | -color | -lines | -cmt] < [map]", g);
 	while (av[i])
 	{
 		if (!ft_strcmp(av[i], "-color"))
@@ -39,8 +39,12 @@ void	parse_args(int ac, char **av, t_lem_gen *g)
 			g->flag.lines = 1;
 		else if (!ft_strcmp(av[i], "-cmt"))
 			g->flag.cmt = 1;
+		else if (!ft_strcmp(av[i], "-help"))
+			g->flag.help = 1;
 		else
-			quit("usage: ./lem-in [-color | -lines | -cmt] < [map]", g);
+			quit("usage: ./lem-in [-help | -color | -lines | -cmt] < [map]", g);
+		if (g->flag.help)
+			quit("usage: ./lem-in [-help | -color | -lines | -cmt] < [map]", g);
 		i++;
 	}
 }

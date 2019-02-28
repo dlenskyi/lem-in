@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 17:04:03 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/01/31 17:04:05 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/28 14:35:34 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct			s_flag
 	int					cmt;
 	int					color;
 	int					lines;
+	int					help;
 }						t_flag;
 
 typedef struct			s_room
