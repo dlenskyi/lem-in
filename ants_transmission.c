@@ -6,88 +6,116 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/15 17:25:09 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/26 18:34:29 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/15 17:25:10 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-void		parse_dat_way(t_lem_gen *g)
+int		is_optimal_road(int ants, int *weight, t_lem_gen *road)
 {
-	int		i;
-	t_room	*room_buf;
-	int		valid;
+	int		curr;
+	int		sum;
 
-	i = -1;
-	room_buf = if_exists(g->room, g->end);
-	valid = g->final[room_buf->id];
-	if (valid == -1)
-		quit("Something went wrong with transmission :(", g);
-	while (++i >= 0 && valid != 0)
-		valid = g->final[valid];
-	if (!(g->ants_trans = (t_ants_trans *)ft_memalloc(sizeof(t_ants_trans)
-			* i)))
-		quit("Initialization error", g);
-	g->size = i;
-	valid = g->final[room_buf->id];
-	g->ants_trans[--i].name = room_buf->name;
-	while (g->final[valid] != 0)
+	curr = 1;
+	sum = 0;
+	while (curr < road->id)
 	{
-		g->ants_trans[--i].name = get_curr_room(valid, g->room)->name;
-		valid = g->final[valid];
+		sum += road->weight - weight[curr];
+		curr++;
+	}
+	return (ants > sum);
+}
+
+int		que_ants(t_lem_gen *g)
+{
+	int		qued;
+
+	qued = 0;
+	while (g->begin)
+	{
+		if (g->ant != 0)
+		{
+			qued = 1;
+			if (g->begin->ant != 0)
+				que_ants(g->begin);
+			g->begin->ant = g->ant;
+			g->ant = 0;
+			return (1);
+		}
+		g = g->begin;
+	}
+	return (qued);
+}
+
+void	send_for_print(t_list_room *ways, int ant, t_util *util)
+{
+	t_lem_gen	*road;
+
+	road = ways->gen;
+	que_ants(road);
+	road->ant = ant;
+	if (util->flag.color)
+		print_if_color(road, util);
+	else
+		print_result(road, util);
+}
+
+void	send_qued_ants(t_list_room *begin, t_util *util)
+{
+	int			qued;
+	t_list_room	*ways;
+
+	qued = 1;
+	while (qued)
+	{
+		ways = begin;
+		qued = 0;
+		while (ways)
+		{
+			if (que_ants(ways->gen))
+			{
+				qued = 1;
+				if (util->flag.color)
+					print_if_color(ways->gen, util);
+				else
+					print_result(ways->gen, util);
+			}
+			ways = ways->next;
+		}
+		if (qued)
+			putendl(util);
 	}
 }
 
-t_room		*get_curr_room(int current, t_room *begin)
+void	send_ants(int ants, int *weight, t_list_room *ways, t_util *util)
 {
-	t_room	*room_buf;
+	int			ant_nb;
+	t_list_room	*begin;
 
-	room_buf = begin;
-	while (room_buf)
+	ant_nb = 0;
+	begin = ways;
+	while (++ant_nb <= ants)
 	{
-		if (room_buf->id == current)
-			return (room_buf);
-		room_buf = room_buf->next;
+		ways = begin;
+		send_for_print(ways, ant_nb, util);
+		ways = ways->next;
+		while (ways && is_optimal_road(ants - ant_nb, weight, ways->gen))
+		{
+			ant_nb += 1;
+			send_for_print(ways, ant_nb, util);
+			ways = ways->next;
+		}
+		while (ways && que_ants(ways->gen))
+		{
+			if (util->flag.color)
+				print_if_color(ways->gen, util);
+			else
+				print_result(ways->gen, util);
+			ways = ways->next;
+		}
+		putendl(util);
 	}
-	return (room_buf);
-}
-
-int			if_remains(t_lem_gen *g)
-{
-	int	i;
-
-	i = -1;
-	while (++i < g->size)
-	{
-		if (g->ants_trans[i].ants != 0)
-			return (0);
-	}
-	return (1);
-}
-
-void		send_ants(t_lem_gen *g)
-{
-	int		i;
-	int		curr_ant;
-
-	curr_ant = 0;
-	ft_printf("\n");
-	while (++curr_ant <= g->ant)
-	{
-		g->ants_trans[0].ants = curr_ant;
-		(g->flag.color) ? (print_if_color(g->size, g)) :
-		(print_result(g->size, g));
-		i = g->size;
-		while (--i)
-			g->ants_trans[i].ants = g->ants_trans[i - 1].ants;
-		g->ants_trans[0].ants = 0;
-	}
-	while (!if_remains(g))
-	{
-		(g->flag.color) ? (print_if_color(g->size, g)) :
-		(print_result(g->size, g));
-		i = g->size;
-		while (--i)
-			g->ants_trans[i].ants = g->ants_trans[i - 1].ants;
-	}
+	free(weight);
+	send_qued_ants(begin, util);
 }

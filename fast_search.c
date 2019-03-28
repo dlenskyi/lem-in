@@ -6,90 +6,108 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/01 14:13:09 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/26 18:26:53 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/01 14:13:10 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-void		push_delay(int dest, t_road **begin, t_lem_gen *g)
+t_lem_gen	*to_the_end(t_list_room *list_room, t_util *util)
 {
-	t_road	*road_tmp;
-	t_road	*road;
+	t_lem_gen	*start;
+	t_lem_gen	*end;
 
-	if (!(road = (t_road *)ft_memalloc(sizeof(t_road))))
-		quit("Initialization error", g);
-	road_tmp = *begin;
-	road->dest = dest;
-	if (!road_tmp)
-		*begin = road;
-	else
+	start = NULL;
+	end = NULL;
+	while (list_room)
 	{
-		while (road_tmp)
+		if (list_room->gen->end)
+			end = list_room->gen;
+		if (list_room->gen->start)
+			start = list_room->gen;
+		list_room = list_room->next;
+	}
+	if (!end)
+		quit("You didn't enter start!", util);
+	if (!start)
+		quit("You didn't enter end!", util);
+	return (end);
+}
+
+int			is_used(t_util *util, t_lem_gen *g)
+{
+	g->id = g->used;
+	g->used = INT_MAX;
+	if (util->end)
+		return (1);
+	if (g->begin)
+		g->weight = is_used(util, g->begin) + 1;
+	return (g->weight);
+}
+
+void		push_delay(int used, t_list_room **head,
+					t_list_room **tail, t_lem_gen *g)
+{
+	t_list_room	*tmp_neighbour;
+
+	tmp_neighbour = g->neighbour;
+	while (tmp_neighbour)
+	{
+		if (tmp_neighbour->gen->used != INT_MAX &&
+			tmp_neighbour->gen->used != used)
 		{
-			if (!road_tmp->next)
-			{
-				road_tmp->next = road;
-				return ;
-			}
-			road_tmp = road_tmp->next;
+			tmp_neighbour->gen->used = used;
+			tmp_neighbour->gen->begin = g;
+			is_safe_delay(head, tail, tmp_neighbour->gen);
 		}
+		tmp_neighbour = tmp_neighbour->next;
 	}
 }
 
-void		pop_delay(t_road **begin)
+t_lem_gen	*breadth_first_search(int used, t_lem_gen *final, t_util *util)
 {
-	t_road	*road_tmp;
+	t_lem_gen	*g;
+	t_list_room	*start;
+	t_list_room	*head;
+	t_list_room	*tail;
 
-	road_tmp = (*begin)->next;
-	free(*begin);
-	*begin = road_tmp;
-}
-
-void		parse_optimal_way(t_lem_gen *g)
-{
-	int		i;
-	t_room	*room_buf;
-
-	i = -1;
-	if (!(g->final = (int *)ft_memalloc(sizeof(int) * (g->room_num + 1))))
-		quit("Initialization error", g);
-	if (!(g->weight = (double *)ft_memalloc(sizeof(double) *
-			(g->room_num + 1))))
-		quit("Initialization error", g);
-	while (g->room_num >= ++i)
-		g->final[i] = -1;
-	i = -1;
-	while (g->room_num >= ++i)
-		g->weight[i] = LONG_MAX;
-	room_buf = if_exists(g->room, g->start);
-	g->final[room_buf->id] = 0;
-	g->weight[room_buf->id] = 0;
-	push_delay(room_buf->id, &g->delay, g);
-}
-
-void		get_optimal_way(t_lem_gen *g)
-{
-	int		dst_buf;
-	t_road	*r_buf;
-
-	while (g->delay)
+	head = NULL;
+	tail = NULL;
+	is_safe_delay(&head, &tail, final);
+	start = head;
+	while (head != NULL)
 	{
-		dst_buf = g->delay->dest;
-		r_buf = g->road[dst_buf];
-		pop_delay(&g->delay);
-		if (g->weight[dst_buf] >= 0)
+		g = check_head(&head);
+		g->used = used;
+		if (g->start)
 		{
-			while (r_buf)
-			{
-				if (g->weight[dst_buf] < g->weight[r_buf->dest])
-				{
-					g->weight[r_buf->dest] = g->weight[dst_buf];
-					push_delay(r_buf->dest, &g->delay, g);
-					g->final[r_buf->dest] = dst_buf;
-				}
-				r_buf = r_buf->next;
-			}
+			is_used(util, g->begin);
+			clean_delay(start);
+			return (g->begin);
 		}
+		push_delay(used, &head, &tail, g);
 	}
+	clean_delay(start);
+	return (NULL);
+}
+
+t_list_room	*find_roads(t_lem_gen *final, t_util *util)
+{
+	t_lem_gen	*road;
+	t_list_room	*ways;
+	int			curr;
+
+	curr = 1;
+	ways = NULL;
+	while ((road = breadth_first_search(curr, final, util)))
+	{
+		if (!ways)
+			ways = new_list_room(road);
+		else
+			push_valid_room(ways, new_list_room(road), util);
+		if (util->end)
+			break ;
+		curr++;
+	}
+	return (ways);
 }

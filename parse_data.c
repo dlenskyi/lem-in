@@ -6,103 +6,73 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:28:14 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/26 17:49:02 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/02/26 17:23:43 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-void		is_safe(char **str, t_lem_gen *g)
+void		is_safe_ant(t_map **map, t_util *util)
 {
-	if ((ft_strlen(str[1]) > 18 || ft_strchr(str[0], '-')) ||
-		(ft_strlen(str[2]) > 18) || !str[1] || !str[2] || str[3] ||
-		str[0][0] == 'L' || g->chained)
-	{
-		ft_del_strsplit(str);
-		quit("Invalid map", g);
-	}
-	push_room(str, &g->room, g);
+	if (!ft_strstr((*map)->info, "##start") &&
+		!ft_strstr((*map)->info, "##end"))
+		push_comment(&util->comment, (*map)->info, util);
+	if (!ft_strcmp((*map)->info, "##start"))
+		quit("You cannot manage START with ants!", util);
+	if (!ft_strcmp("##end", (*map)->info))
+		quit("You cannot manage END with ants!", util);
 }
 
-void		parse_ants(t_lem_gen *g)
+int			parse_ants(t_map **map, t_util *util)
 {
-	while (get_next_line(0, &g->line) > 0)
+	int		i;
+	int		ants_nb;
+
+	i = -1;
+	ants_nb = 0;
+	while (*map && (*map)->info[0] == '#')
 	{
-		if (g->line[0] == '#')
+		is_safe_ant(map, util);
+		*map = (*map)->next;
+	}
+	if (*map)
+	{
+		while ((*map)->info[++i])
+			if (!ft_isdigit((*map)->info[i]))
+				quit("invalid ants", util);
+		ants_nb = ft_atoi((*map)->info);
+		if (!ants_nb)
+			quit("Choose greater than zero number of ants!", util);
+		else
+			*map = (*map)->next;
+	}
+	return (ants_nb);
+}
+
+t_map		*parse_map(t_util *util)
+{
+	t_map	*map;
+	t_map	*previous;
+	t_map	*begin;
+
+	begin = NULL;
+	while (get_next_line(0, &util->line) > 0)
+	{
+		if (!begin)
 		{
-			push_comment(&g->comment, g);
-			ft_strdel(&g->line);
+			begin = (t_map *)ft_memalloc(sizeof(t_map));
+			begin->next = NULL;
+			begin->info = util->line;
+			previous = begin;
 		}
 		else
-			break ;
-	}
-	if (!g->line || ft_atoi(g->line) <= 0)
-		quit("Invalid number of ants", g);
-	g->ant = ft_atoi(g->line);
-	push_map(&g->map, g);
-	ft_strdel(&g->line);
-}
-
-void		parse_room(t_lem_gen *g)
-{
-	while (get_next_line(0, &g->line) > 0)
-	{
-		if (g->line[0] == '#' && !ft_strstr(g->line, "##start") &&
-			!ft_strstr(g->line, "##end") && !ft_strstr(g->line,
-					"#Here is the number of lines required:"))
-			push_comment(&g->comment, g);
-		else if (ft_strstr(g->line, "#Here is the number of lines required:"))
-			g->req_lines = ft_strdup(g->line);
-		else if (ft_strstr(g->line, "##start"))
-			push_start(g);
-		else if (ft_strchr(g->line, ' '))
-			is_safe(ft_strsplit(g->line, ' '), g);
-		else if (ft_strstr(g->line, "##end"))
-			push_end(g);
-		else if (ft_strchr(g->line, '-'))
-			push_chain(ft_strsplit(g->line, '-'), g);
-		else
-			quit("Invalid room", g);
-		if (!ft_strstr(g->line, "#Here is the number of lines required:") &&
-			g->line[0] != '#')
-			push_map(&g->map, g);
-		ft_strdel(&g->line);
-	}
-}
-
-void		new_chain(t_chained **begin, t_chained *chain)
-{
-	t_chained *buf_chain;
-
-	buf_chain = *begin;
-	if (!buf_chain)
-		*begin = chain;
-	else
-	{
-		while (buf_chain)
 		{
-			if (!buf_chain->next)
-			{
-				buf_chain->next = chain;
-				return ;
-			}
-			buf_chain = buf_chain->next;
+			map = (t_map *)ft_memalloc(sizeof(t_map));
+			map->next = NULL;
+			map->info = util->line;
+			previous->next = map;
+			previous = map;
 		}
 	}
-}
-
-void		find_road(t_lem_gen *g)
-{
-	t_road		*road;
-	t_chained	*chained;
-
-	if (!(g->road = ft_memalloc(sizeof(t_road) * (g->room_num + 2))))
-		quit("Initialization error", g);
-	chained = g->chained;
-	while (chained)
-	{
-		road = new_road(chained, g);
-		push_road(&g->road[chained->src], road);
-		chained = chained->next;
-	}
+	return (begin);
 }

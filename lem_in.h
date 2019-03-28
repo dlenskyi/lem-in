@@ -6,7 +6,7 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 17:04:03 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/28 14:35:34 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/01/31 17:04:05 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,109 +15,115 @@
 
 # include "libft/includes/libft.h"
 
-typedef struct			s_flag
+typedef struct				s_flag
 {
-	int					cmt;
-	int					color;
-	int					lines;
-	int					help;
-}						t_flag;
+	int						cmt;
+	int						color;
+	int						lines;
+}							t_flag;
 
-typedef struct			s_room
+typedef struct				s_comment
 {
-	int					id;
-	char				*name;
-	struct s_room		*next;
-}						t_room;
+	char					*comment;
+	struct s_comment		*next;
+}							t_comment;
 
-typedef struct			s_chained
+typedef struct				s_coord
 {
-	int					dest;
-	int					src;
-	struct s_chained	*next;
-}						t_chained;
+	int						x;
+	int						y;
+}							t_coord;
 
-typedef struct			s_ants_trans
+typedef struct				s_map
 {
-	char				*name;
-	int					ants;
-	int					id;
-}						t_ants_trans;
+	char					*info;
+	struct s_map			*next;
+}							t_map;
 
-typedef struct			s_comment
+typedef struct s_lem_gen	t_lem_gen;
+
+typedef struct				s_list_room
 {
-	char				*comment;
-	struct s_comment	*next;
-}						t_comment;
+	t_lem_gen				*gen;
+	struct s_list_room		*next;
+}							t_list_room;
 
-typedef struct			s_road
+typedef struct				s_util
 {
-	int					dest;
-	struct s_road		*next;
-}						t_road;
+	char					*line;
+	int						ants_nb;
+	t_flag					flag;
+	t_comment				*comment;
+	int						start;
+	int						end;
+	int						my_lines;
+}							t_util;
 
-typedef struct			s_map
+typedef struct				s_lem_gen
 {
-	char				*info;
-	struct s_map		*next;
-}						t_map;
+	t_list_room				*neighbour;
+	t_coord					coord;
+	t_lem_gen				*begin;
+	int						start;
+	int						end;
+	char					*name;
+	int						used;
+	int						weight;
+	int						id;
+	int						ant;
+}							s_lem_gen;
 
-typedef struct			s_lem_gen
-{
-	t_room				*room;
-	t_chained			*chained;
-	t_ants_trans		*ants_trans;
-	t_comment			*comment;
-	t_road				*delay;
-	t_road				**road;
-	t_flag				flag;
-	t_map				*map;
-	char				*line;
-	int					size;
-	int					*final;
-	int					room_num;
-	int					ant;
-	char				*start;
-	char				*end;
-	double				*weight;
-	char				*req_lines;
-	int					my_lines;
-}						t_lem_gen;
+int							parse_ants(t_map **map, t_util *util);
+t_map						*parse_map(t_util *util);
+void						is_safe_ant(t_map **map, t_util *util);
 
-void					parse_ants(t_lem_gen *g);
-void					parse_room(t_lem_gen *g);
-void					is_safe(char **str, t_lem_gen *g);
-void					find_road(t_lem_gen *g);
-void					new_chain(t_chained **begin, t_chained *chain);
+t_list_room					*get_rooms_list(t_map **map, t_util *util);
+void						is_safe_start(int start, t_util *util);
+void						is_safe_end(int end, t_util *util);
+void						push_valid_room(t_list_room *begin,
+							t_list_room *new_list, t_util *util);
+void						push_comment(t_comment **begin, char *cmt, t_util *util);
 
-t_room					*push_room(char **str, t_room **begin, t_lem_gen *g);
-void					push_chain(char **str, t_lem_gen *g);
-void					push_comment(t_comment **begin, t_lem_gen *g);
-void					push_start(t_lem_gen *g);
-void					push_end(t_lem_gen *g);
+void						push_room(t_list_room *begin,
+							t_list_room *new_list, t_util *util);
+t_list_room					*new_list_room(t_lem_gen *gen);
+t_lem_gen					*add_room(char **str, t_util *util);
+void						get_links(t_list_room *list_room,
+							t_map **map, t_util *util);
 
-t_room					*if_exists(t_room *begin, char *chain);
-t_road					*new_road(t_chained *chained, t_lem_gen *g);
-void					push_road(t_road **begin, t_road *road);
-void					push_map(t_map **begin, t_lem_gen *g);
+t_lem_gen					*to_the_end(t_list_room *list_room, t_util *util);
+t_list_room					*find_roads(t_lem_gen *final, t_util *util);
+void						push_delay(int used, t_list_room **head,
+							t_list_room **tail, t_lem_gen *g);
+t_lem_gen					*breadth_first_search(int used, t_lem_gen *final,
+							t_util *util);
+int							is_used(t_util *util, t_lem_gen *g);
 
-void					push_delay(int dest, t_road **begin, t_lem_gen *g);
-void					pop_delay(t_road **begin);
-void					parse_optimal_way(t_lem_gen *g);
-void					get_optimal_way(t_lem_gen *g);
+int							*get_weight(t_list_room *ways);
+t_lem_gen					*check_head(t_list_room **head);
+void						is_safe_delay(t_list_room **head,
+							t_list_room **tail, t_lem_gen *g);
+void						clean_delay(t_list_room *head);
+void						putendl(t_util *util);
+int							args_len(char **str);
 
-void					parse_dat_way(t_lem_gen *g);
-t_room					*get_curr_room(int current, t_room *begin);
-int						if_remains(t_lem_gen *g);
-void					send_ants(t_lem_gen *g);
+int							is_optimal_road(int ants,
+							int *weight, t_lem_gen *road);
+void						send_for_print(t_list_room *ways,
+							int ant, t_util *util);
+void						send_for_print(t_list_room *ways,
+							int ant, t_util *util);
+void						send_qued_ants(t_list_room *begin, t_util *util);
+void						send_ants(int ants, int *weight,
+							t_list_room *ways, t_util *util);
 
-void					print_result(int ants, t_lem_gen *g);
-void					print_if_color(int ants, t_lem_gen *g);
-void					print_map(t_lem_gen *g);
-void					print_color_map(t_lem_gen *g);
-void					print_args(t_lem_gen *g);
+void						print_result(t_lem_gen *g, t_util *util);
+void						print_if_color(t_lem_gen *g, t_util *util);
+void						print_map(t_map *map, t_map *begin);
+void						print_color_map(t_map *map, t_map *begin);
+void						print_args(t_util *util);
 
-void					parse_args(int ac, char **av, t_lem_gen *g);
-void					quit(char *s, t_lem_gen *g);
+void						parse_args(int ac, char **av, t_util *util);
+void						quit(char *s, t_util *util);
 
 #endif

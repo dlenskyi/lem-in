@@ -6,55 +6,64 @@
 #    By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/04 16:22:11 by dlenskyi          #+#    #+#              #
-#    Updated: 2019/02/28 14:39:56 by dlenskyi         ###   ########.fr        #
+#    Updated: 2019/03/28 16:48:28 by dlenskyi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = lem-in
 
-FLAGS = -c -Wall -Wextra -Werror -O3
+FLAGS = -Wall -Wextra -Werror -O3
 CC = gcc
 
-LIBFT_DIR = libft
-LIBS = -L $(LIBFT_DIR) -lft
+LIBFT = $(LIBFT_DIR)libft.a
+LIBFT_DIR = ./libft/
+LIBFT_HEAD = $(LIBFT_DIR)includes/
 LEM-IN_HEAD = lem-in.h
 
-INCLUDES = -I $(LEM-IN_HEAD) -I $(LIBFT_DIR)/includes
+INCLUDES = -I$(LEM-IN_HEAD) -I$(LIBFT_HEAD)
 
-SRC = 	main.c parse_data.c push.c ants_transmission.c fast_search.c chained_room_util.c \
-        manage_print.c
+SRC = 	main.c \
+        parse_data.c \
+        push_room.c \
+        path_util.c \
+        fast_search.c \
+        manage_print.c \
+        ants_transmission.c \
+        chained_room_util.c \
 
 OBJ = $(patsubst %.c, %.o, $(SRC))
 
-RED = \033[31m
-GREEN = \033[32m
-YELLOW = \033[33m
-OFF = \033[0m
+RED = \x1B[31m
+GREEN = \x1B[32m
+YELLOW = \x1B[33m
+OFF = \x1B[0m
 
 .PHONY: all clean fclean re
 
 all: $(NAME)
 
-%.o: %.c
-	@$(CC) $(FLAGS) $(INCLUDES) $< -o $@
+$(NAME): $(LIBFT) $(OBJ)
+	@$(CC) $(FLAGS) $(INCLUDES) $(LIBFT) $(OBJ) -o $(NAME)
+	@echo "$(GREEN)lem-in completed!\n$(OFF)"
+	@echo "$(GREEN)usage example: ./lem-in < [map]$(OFF)"
 
-$(NAME): $(OBJ)
+%.o: %.c $(LEM-IN_HEAD)
+	@$(CC) $(FLAGS) -c $(INCLUDES) $< -o $@
+
+$(LIBFT):
 	@echo "$(YELLOW)Compiling lem-in project...\n$(OFF)"
 	@echo "$(YELLOW)Compiling libft...$(OFF)"
-	@$(MAKE) -C $(LIBFT_DIR)
+	@$(MAKE) -sC $(LIBFT_DIR)
 	@echo "$(GREEN)libft.a was created.$(OFF)"
-	@$(CC) $(OBJ) $(LIBS) -o $@
-	@echo "$(GREEN)lem-in completed!\n$(OFF)"
-	@echo "$(GREEN)usage: ./lem-in [-help | -color | -lines | -cmt] < [map]$(OFF)"
 
 clean:
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -sC $(LIBFT_DIR) clean
 	@rm -f $(OBJ)
 	@rm -f filler.trace
 	@echo "$(RED)libft.a was removed$(OFF)"
 
 fclean: clean
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@rm -f $(LIBFT)
 	@rm -f $(NAME)
 	@rm -f $(OBJ)
 	@rm -f filler.trace
