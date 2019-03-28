@@ -12,7 +12,7 @@
 
 #include "lem_in.h"
 
-void	print_result(t_lem_gen *g, t_util *util)
+void	prnt_res(t_lem_gen *g, t_util *util)
 {
 	while (g)
 	{
@@ -29,16 +29,25 @@ void	print_args(t_util *util)
 	t_comment	*cmt_tmp;
 
 	cmt_tmp = util->comment;
-	if (util->flag.lines && util->flag.color)
-		ft_printf("\n{RED}Number of lines: %d{OFF}\n", util->my_lines);
-	else if (util->flag.lines)
+	if (util->flg.lines && util->flg.col)
+		ft_printf("\n{RED}{SET:BO}Number of lines: %d{OFF}\n", util->my_lines);
+	else if (util->flg.lines)
 		ft_printf("\nNumber of lines: %d\n", util->my_lines);
-	if (util->flag.cmt)
+	if (util->flg.cmt && util->flg.col)
 	{
-		ft_printf("\n{MGT}----COMMENTS----\n{OFF}");
+		ft_printf("\n{MGT}{SET:BO}----COMMENTS----\n{OFF}");
 		while (cmt_tmp)
 		{
-			ft_printf("{YEL}%s{OFF}\n", cmt_tmp->comment);
+			ft_printf("{YEL}{SET:BO}%s{OFF}\n", cmt_tmp->comment);
+			cmt_tmp = cmt_tmp->next;
+		}
+	}
+	else if (util->flg.cmt)
+	{
+		ft_printf("\n----COMMENTS----\n");
+		while (cmt_tmp)
+		{
+			ft_printf("%s\n", cmt_tmp->comment);
 			cmt_tmp = cmt_tmp->next;
 		}
 	}
@@ -58,18 +67,18 @@ void	print_color_map(t_map *map, t_map *begin)
 {
 	while (begin && begin != map)
 	{
-		ft_printf("{YEL}%s{OFF}\n", begin->info);
+		ft_printf("{YEL}{SET:BO}%s{OFF}\n", begin->info);
 		begin = begin->next;
 	}
 	ft_printf("\n");
 }
 
-void	print_if_color(t_lem_gen *g, t_util *util)
+void	prnt_col(t_lem_gen *g, t_util *util)
 {
 	while (g)
 	{
 		if (g->ant != 0)
-			ft_printf("{GRN}L%d-%s {OFF}", g->ant, g->name);
+			ft_printf("{GRN}{SET:BO}L%d-%s {OFF}", g->ant, g->name);
 		if (util->end)
 			g->ant = 0;
 		g = g->begin;

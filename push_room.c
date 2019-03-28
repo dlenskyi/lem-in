@@ -23,9 +23,7 @@ void			get_start_end(t_map **map, t_util *util)
 	{
 		if (!ft_strstr((*map)->info, "##start") &&
 			!ft_strstr((*map)->info, "##end"))
-		{
 			push_comment(&util->comment, (*map)->info, util);
-		}
 		if (!ft_strcmp((*map)->info, "##start"))
 		{
 			is_safe_start(start, util);
@@ -93,29 +91,4 @@ void			is_safe_end(int end, t_util *util)
 		quit("It cannot be START and END in a row!", util);
 	if (end)
 		quit("It cannot be more than one END in map!", util);
-}
-
-void		push_comment(t_comment **begin, char *cmt, t_util *util)
-{
-	t_comment	*buf;
-	t_comment	*new;
-
-	if (!(new = (t_comment *)ft_memalloc(sizeof(t_comment))))
-		quit("Initialization error", util);
-	new->comment = ft_strdup(cmt);
-	buf = *begin;
-	if (!buf)
-	{
-		*begin = new;
-		return ;
-	}
-	while (buf)
-	{
-		if (!buf->next)
-		{
-			buf->next = new;
-			return ;
-		}
-		buf = buf->next;
-	}
 }

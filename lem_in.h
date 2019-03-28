@@ -18,7 +18,7 @@
 typedef struct				s_flag
 {
 	int						cmt;
-	int						color;
+	int						col;
 	int						lines;
 }							t_flag;
 
@@ -40,11 +40,9 @@ typedef struct				s_map
 	struct s_map			*next;
 }							t_map;
 
-typedef struct s_lem_gen	t_lem_gen;
-
 typedef struct				s_list_room
 {
-	t_lem_gen				*gen;
+	struct s_lem_gen		*gen;
 	struct s_list_room		*next;
 }							t_list_room;
 
@@ -52,7 +50,7 @@ typedef struct				s_util
 {
 	char					*line;
 	int						ants_nb;
-	t_flag					flag;
+	t_flag					flg;
 	t_comment				*comment;
 	int						start;
 	int						end;
@@ -63,7 +61,7 @@ typedef struct				s_lem_gen
 {
 	t_list_room				*neighbour;
 	t_coord					coord;
-	t_lem_gen				*begin;
+	struct s_lem_gen		*begin;
 	int						start;
 	int						end;
 	char					*name;
@@ -71,7 +69,7 @@ typedef struct				s_lem_gen
 	int						weight;
 	int						id;
 	int						ant;
-}							s_lem_gen;
+}							t_lem_gen;
 
 int							parse_ants(t_map **map, t_util *util);
 t_map						*parse_map(t_util *util);
@@ -82,7 +80,6 @@ void						is_safe_start(int start, t_util *util);
 void						is_safe_end(int end, t_util *util);
 void						push_valid_room(t_list_room *begin,
 							t_list_room *new_list, t_util *util);
-void						push_comment(t_comment **begin, char *cmt, t_util *util);
 
 void						push_room(t_list_room *begin,
 							t_list_room *new_list, t_util *util);
@@ -104,7 +101,6 @@ t_lem_gen					*check_head(t_list_room **head);
 void						is_safe_delay(t_list_room **head,
 							t_list_room **tail, t_lem_gen *g);
 void						clean_delay(t_list_room *head);
-void						putendl(t_util *util);
 int							args_len(char **str);
 
 int							is_optimal_road(int ants,
@@ -117,12 +113,15 @@ void						send_qued_ants(t_list_room *begin, t_util *util);
 void						send_ants(int ants, int *weight,
 							t_list_room *ways, t_util *util);
 
-void						print_result(t_lem_gen *g, t_util *util);
-void						print_if_color(t_lem_gen *g, t_util *util);
+void						prnt_res(t_lem_gen *g, t_util *util);
+void						prnt_col(t_lem_gen *g, t_util *util);
 void						print_map(t_map *map, t_map *begin);
 void						print_color_map(t_map *map, t_map *begin);
 void						print_args(t_util *util);
 
+void						putendl(t_util *util);
+void						push_comment(t_comment **begin,
+							char *cmt, t_util *util);
 void						parse_args(int ac, char **av, t_util *util);
 void						quit(char *s, t_util *util);
 

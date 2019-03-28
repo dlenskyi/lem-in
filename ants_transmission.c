@@ -48,20 +48,17 @@ int		que_ants(t_lem_gen *g)
 	return (qued);
 }
 
-void	send_for_print(t_list_room *ways, int ant, t_util *util)
+void	send_for_print(t_list_room *ways, int ant, t_util *u)
 {
 	t_lem_gen	*road;
 
 	road = ways->gen;
 	que_ants(road);
 	road->ant = ant;
-	if (util->flag.color)
-		print_if_color(road, util);
-	else
-		print_result(road, util);
+	(u->flg.col) ? (prnt_col(ways->gen, u)) : (prnt_res(ways->gen, u));
 }
 
-void	send_qued_ants(t_list_room *begin, t_util *util)
+void	send_qued_ants(t_list_room *begin, t_util *u)
 {
 	int			qued;
 	t_list_room	*ways;
@@ -76,19 +73,17 @@ void	send_qued_ants(t_list_room *begin, t_util *util)
 			if (que_ants(ways->gen))
 			{
 				qued = 1;
-				if (util->flag.color)
-					print_if_color(ways->gen, util);
-				else
-					print_result(ways->gen, util);
+				(u->flg.col) ? (prnt_col(ways->gen, u)) :
+				(prnt_res(ways->gen, u));
 			}
 			ways = ways->next;
 		}
 		if (qued)
-			putendl(util);
+			putendl(u);
 	}
 }
 
-void	send_ants(int ants, int *weight, t_list_room *ways, t_util *util)
+void	send_ants(int ants, int *weight, t_list_room *ways, t_util *u)
 {
 	int			ant_nb;
 	t_list_room	*begin;
@@ -98,24 +93,21 @@ void	send_ants(int ants, int *weight, t_list_room *ways, t_util *util)
 	while (++ant_nb <= ants)
 	{
 		ways = begin;
-		send_for_print(ways, ant_nb, util);
+		send_for_print(ways, ant_nb, u);
 		ways = ways->next;
 		while (ways && is_optimal_road(ants - ant_nb, weight, ways->gen))
 		{
 			ant_nb += 1;
-			send_for_print(ways, ant_nb, util);
+			send_for_print(ways, ant_nb, u);
 			ways = ways->next;
 		}
 		while (ways && que_ants(ways->gen))
 		{
-			if (util->flag.color)
-				print_if_color(ways->gen, util);
-			else
-				print_result(ways->gen, util);
+			(u->flg.col) ? (prnt_col(ways->gen, u)) : (prnt_res(ways->gen, u));
 			ways = ways->next;
 		}
-		putendl(util);
+		putendl(u);
 	}
 	free(weight);
-	send_qued_ants(begin, util);
+	send_qued_ants(begin, u);
 }

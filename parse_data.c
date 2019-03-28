@@ -39,7 +39,7 @@ int			parse_ants(t_map **map, t_util *util)
 	{
 		while ((*map)->info[++i])
 			if (!ft_isdigit((*map)->info[i]))
-				quit("invalid ants", util);
+				quit("Invalid number of ants!", util);
 		ants_nb = ft_atoi((*map)->info);
 		if (!ants_nb)
 			quit("Choose greater than zero number of ants!", util);

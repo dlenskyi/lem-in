@@ -18,6 +18,31 @@ void	putendl(t_util *util)
 	util->my_lines += 1;
 }
 
+void	push_comment(t_comment **begin, char *cmt, t_util *util)
+{
+	t_comment	*buf;
+	t_comment	*new;
+
+	if (!(new = (t_comment *)ft_memalloc(sizeof(t_comment))))
+		quit("Initialization error", util);
+	new->comment = ft_strdup(cmt);
+	buf = *begin;
+	if (!buf)
+	{
+		*begin = new;
+		return ;
+	}
+	while (buf)
+	{
+		if (!buf->next)
+		{
+			buf->next = new;
+			return ;
+		}
+		buf = buf->next;
+	}
+}
+
 void	quit(char *s, t_util *util)
 {
 	if (util->line)
@@ -40,11 +65,11 @@ void	parse_args(int ac, char **av, t_util *util)
 	while (av[i])
 	{
 		if (!ft_strcmp(av[i], "-color"))
-			util->flag.color = 1;
+			util->flg.col = 1;
 		else if (!ft_strcmp(av[i], "-lines"))
-			util->flag.lines = 1;
+			util->flg.lines = 1;
 		else if (!ft_strcmp(av[i], "-cmt"))
-			util->flag.cmt = 1;
+			util->flg.cmt = 1;
 		else
 			quit("usage: ./lem-in [-color | -lines | -cmt] < [map]", util);
 		i++;
@@ -71,10 +96,10 @@ int		main(int ac, char **av)
 	ways = find_roads(to_the_end(list_room, &util), &util);
 	if (!ways)
 		quit("There is no way to get end :(", &util);
-	(util.flag.color) ? (print_color_map(map, begin)) :
+	(util.flg.col) ? (print_color_map(map, begin)) :
 	(print_map(map, begin));
 	send_ants(util.ants_nb, get_weight(ways), ways, &util);
-	if (util.flag.cmt || util.flag.lines || util.flag.color)
+	if (util.flg.cmt || util.flg.lines || util.flg.col)
 		print_args(&util);
 	quit(NULL, &util);
 	return (0);
