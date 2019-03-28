@@ -74,6 +74,7 @@ typedef struct				s_lem_gen
 int							parse_ants(t_map **map, t_util *util);
 t_map						*parse_map(t_util *util);
 void						is_safe_ant(t_map **map, t_util *util);
+void						check_if_l(t_map **map, t_util *util);
 
 t_list_room					*get_rooms_list(t_map **map, t_util *util);
 void						is_safe_start(int start, t_util *util);

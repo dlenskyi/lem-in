@@ -6,11 +6,17 @@
 /*   By: dlenskyi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:28:14 by dlenskyi          #+#    #+#             */
-/*   Updated: 2019/02/26 17:23:43 by dlenskyi         ###   ########.fr       */
+/*   Updated: 2019/03/28 21:31:39 by dlenskyi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+
+void		check_if_l(t_map **map, t_util *util)
+{
+	if (*map && (*map)->info[0] == 'L')
+		quit("Room's name cannot start from L!", util);
+}
 
 void		is_safe_ant(t_map **map, t_util *util)
 {

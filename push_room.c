@@ -58,6 +58,7 @@ t_list_room		*get_rooms_list(t_map **map, t_util *util)
 	list_room = NULL;
 	while (*map)
 	{
+		check_if_l(map, util);
 		get_start_end(map, util);
 		if (*map)
 		{

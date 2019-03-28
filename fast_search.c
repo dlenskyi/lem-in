@@ -38,7 +38,7 @@ int			is_used(t_util *util, t_lem_gen *g)
 {
 	g->id = g->used;
 	g->used = INT_MAX;
-	if (util->end)
+	if (g->end)
 		return (1);
 	if (g->begin)
 		g->weight = is_used(util, g->begin) + 1;
@@ -105,7 +105,7 @@ t_list_room	*find_roads(t_lem_gen *final, t_util *util)
 			ways = new_list_room(road);
 		else
 			push_valid_room(ways, new_list_room(road), util);
-		if (util->end)
+		if (road->end)
 			break ;
 		curr++;
 	}
